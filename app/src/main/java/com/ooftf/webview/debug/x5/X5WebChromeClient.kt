@@ -1,24 +1,23 @@
 package com.ooftf.webview.debug.x5
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
-import android.hardware.camera2.CameraCharacteristics
 import android.net.Uri
-import android.os.Build
 import android.os.Message
-import android.provider.MediaStore
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.hunter.library.debug.HunterDebug
-import com.ooftf.basic.engine.ActivityResultCallbackFragment
+import com.luck.picture.lib.PictureSelector
+import com.luck.picture.lib.config.PictureMimeType
+import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.listener.OnResultCallbackListener
 import com.ooftf.basic.utils.getFragmentActivity
+import com.ooftf.webview.debug.GlideEngine
 import com.tencent.smtt.export.external.interfaces.*
 import com.tencent.smtt.sdk.ValueCallback
 import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebStorage
 import com.tencent.smtt.sdk.WebView
+
 
 /**
  *
@@ -174,7 +173,7 @@ class X5WebChromeClient : WebChromeClient() {
         fileChooserParams?.takeIf { it.acceptTypes.isNotEmpty() }?.let {
             when (it.acceptTypes.first()) {
                 "video/*" -> {
-                    if (chooseVideo(webView.context.getFragmentActivity(),valueCallback)) {
+                    if (chooseVideo(webView.context.getFragmentActivity(), valueCallback)) {
                         return true
                     } else {
                         valueCallback.onReceiveValue(null)
@@ -196,12 +195,30 @@ class X5WebChromeClient : WebChromeClient() {
         return false
     }
 
-    private fun chooseVideo(context: FragmentActivity?, valueCallback: ValueCallback<Array<Uri>>): Boolean {
-        if(context == null){
+    private fun chooseVideo(
+        context: FragmentActivity?,
+        valueCallback: ValueCallback<Array<Uri>>
+    ): Boolean {
+        if (context == null) {
             return false
         }
-        Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
-            /* 调用前置摄像头 */
+        PictureSelector.create(context)
+            .openGallery(PictureMimeType.ofAll())
+            .imageEngine(GlideEngine.createGlideEngine())
+            .forResult(object : OnResultCallbackListener<LocalMedia?> {
+                override fun onResult(result: List<LocalMedia?>) {
+                    val s = result
+                    //valueCallback.onReceiveValue(arrayOf(Uri.parse(data.dataString)))
+                }
+
+                override fun onCancel() {
+                    valueCallback.onReceiveValue(null)
+                }
+            })
+        return true
+
+        /*Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
+            *//* 调用前置摄像头 *//*
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 && Build.VERSION.SDK_INT < Build.VERSION_CODES.O -> {
                     takeVideoIntent.putExtra(
@@ -219,7 +236,7 @@ class X5WebChromeClient : WebChromeClient() {
                 else -> takeVideoIntent.putExtra("android.intent.extras.CAMERA_FACING", 1)
             }
 
-            /* 低质量模式 0，高质量模式 1*/
+            *//* 低质量模式 0，高质量模式 1*//*
             takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0)
             //限制时长 s
             takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 5)
@@ -243,7 +260,7 @@ class X5WebChromeClient : WebChromeClient() {
                 return true
             }
             return false
-        }
+        }*/
 
 
     }

@@ -125,7 +125,7 @@ class X5WebViewClient : WebViewClient() {
         super.onPageCommitVisible(p0, p1)
     }
     @HunterDebug
-    override fun onRenderProcessGone(p0: WebView?, p1: a?): Boolean {
+    override fun onRenderProcessGone(p0: WebView?, p1: RenderProcessGoneDetail?): Boolean {
         return super.onRenderProcessGone(p0, p1)
     }
 }
