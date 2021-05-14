@@ -26,7 +26,7 @@ class X5WebActivity : AppCompatActivity() {
         binding.webView.webViewClient = X5WebViewClient()
         binding.webView.webChromeClientExtension = ProxyWebChromeClientExtension()
 
-        binding.webView.loadUrl(Const.URL)
+        binding.webView.loadUrl(Const.getCurrentUrl())
 
     }
 

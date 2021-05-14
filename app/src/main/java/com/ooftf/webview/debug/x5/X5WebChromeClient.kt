@@ -3,6 +3,7 @@ package com.ooftf.webview.debug.x5
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Message
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.hunter.library.debug.HunterDebug
@@ -170,6 +171,8 @@ class X5WebChromeClient : WebChromeClient() {
         valueCallback: ValueCallback<Array<Uri>>,
         fileChooserParams: FileChooserParams?
     ): Boolean {
+        Log.e("onShowFileChooser", fileChooserParams?.acceptTypes.contentToString())
+
         fileChooserParams?.takeIf { it.acceptTypes.isNotEmpty() }?.let {
             when (it.acceptTypes.first()) {
                 "video/*" -> {
@@ -203,12 +206,11 @@ class X5WebChromeClient : WebChromeClient() {
             return false
         }
         PictureSelector.create(context)
-            .openGallery(PictureMimeType.ofAll())
+            .openGallery(PictureMimeType.ofVideo())
             .imageEngine(GlideEngine.createGlideEngine())
             .forResult(object : OnResultCallbackListener<LocalMedia?> {
                 override fun onResult(result: List<LocalMedia?>) {
-                    val s = result
-                    //valueCallback.onReceiveValue(arrayOf(Uri.parse(data.dataString)))
+                    valueCallback.onReceiveValue(arrayOf(Uri.parse(result[0]?.path)))
                 }
 
                 override fun onCancel() {

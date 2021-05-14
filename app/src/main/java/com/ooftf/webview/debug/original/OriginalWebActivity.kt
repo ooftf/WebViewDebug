@@ -23,7 +23,7 @@ class OriginalWebActivity : AppCompatActivity() {
         binding.webView.webChromeClient = OriginalWebChromeClient()
         binding.webView.webViewClient = OriginalWebViewClient()
 
-        binding.webView.loadUrl(Const.URL)
+        binding.webView.loadUrl(Const.getCurrentUrl())
 
     }
 
