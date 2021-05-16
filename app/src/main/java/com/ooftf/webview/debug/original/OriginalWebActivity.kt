@@ -26,6 +26,25 @@ class OriginalWebActivity : AppCompatActivity() {
         binding.webView.loadUrl(Const.getCurrentUrl())
 
     }
+    override fun onPause() {
+        binding.webView.onPause()
+        super.onPause()
+    }
 
+    override fun onResume() {
+        binding.webView.onResume()
+        super.onResume()
+    }
+    override fun onBackPressed() {
+        if(binding.webView.canGoBack()){
+            binding.webView.goBack()
+        }else{
+            super.onBackPressed()
+        }
+    }
 
+    override fun onDestroy() {
+        binding.webView.destroy()
+        super.onDestroy()
+    }
 }

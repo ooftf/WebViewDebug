@@ -27,8 +27,6 @@ import com.tencent.smtt.sdk.WebView
  * @date 2021/5/14
  */
 class X5WebChromeClient : WebChromeClient() {
-    val REQUEST_CODE_VIDEO = 123
-
     @HunterDebug
     override fun onExceededDatabaseQuota(
         p0: String?,
@@ -171,100 +169,27 @@ class X5WebChromeClient : WebChromeClient() {
         valueCallback: ValueCallback<Array<Uri>>,
         fileChooserParams: FileChooserParams?
     ): Boolean {
-        Log.e("onShowFileChooser", fileChooserParams?.acceptTypes.contentToString())
+        fileChooserParams?.acceptTypes?.firstOrNull()?.let {
+            webView.context.getFragmentActivity()?.let { fragmentActivity ->
+                PictureSelector.create(webView.context.getFragmentActivity())
+                    .openGallery(PictureMimeType.getMimeType(it))
+                    .imageEngine(GlideEngine.createGlideEngine())
+                    .forResult(object : OnResultCallbackListener<LocalMedia> {
+                        override fun onResult(result: List<LocalMedia>) {
+                            valueCallback.onReceiveValue(result.map {
+                                Uri.parse(it.path)
+                            }.toTypedArray())
+                        }
 
-        fileChooserParams?.takeIf { it.acceptTypes.isNotEmpty() }?.let {
-            when (it.acceptTypes.first()) {
-                "video/*" -> {
-                    if (chooseVideo(webView.context.getFragmentActivity(), valueCallback)) {
-                        return true
-                    } else {
-                        valueCallback.onReceiveValue(null)
-                        return false
-                    }
-                }
-                "image/*" -> {
-                    valueCallback.onReceiveValue(null)
-                    return false
-                }
-                else -> {
-                    valueCallback.onReceiveValue(null)
-                    return false
-                }
+                        override fun onCancel() {
+                            valueCallback.onReceiveValue(null)
+                        }
+                    })
+                return true
             }
-
         }
         valueCallback.onReceiveValue(null)
         return false
-    }
-
-    private fun chooseVideo(
-        context: FragmentActivity?,
-        valueCallback: ValueCallback<Array<Uri>>
-    ): Boolean {
-        if (context == null) {
-            return false
-        }
-        PictureSelector.create(context)
-            .openGallery(PictureMimeType.ofVideo())
-            .imageEngine(GlideEngine.createGlideEngine())
-            .forResult(object : OnResultCallbackListener<LocalMedia?> {
-                override fun onResult(result: List<LocalMedia?>) {
-                    valueCallback.onReceiveValue(arrayOf(Uri.parse(result[0]?.path)))
-                }
-
-                override fun onCancel() {
-                    valueCallback.onReceiveValue(null)
-                }
-            })
-        return true
-
-        /*Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
-            *//* 调用前置摄像头 *//*
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 && Build.VERSION.SDK_INT < Build.VERSION_CODES.O -> {
-                    takeVideoIntent.putExtra(
-                        "android.intent.extras.CAMERA_FACING",
-                        CameraCharacteristics.LENS_FACING_FRONT
-                    )
-                }
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                    takeVideoIntent.putExtra(
-                        "android.intent.extras.CAMERA_FACING",
-                        CameraCharacteristics.LENS_FACING_FRONT
-                    )
-                    takeVideoIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true)
-                }
-                else -> takeVideoIntent.putExtra("android.intent.extras.CAMERA_FACING", 1)
-            }
-
-            *//* 低质量模式 0，高质量模式 1*//*
-            takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0)
-            //限制时长 s
-            takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 5)
-            //开启摄像机
-            takeVideoIntent.resolveActivity(context.packageManager)?.also {
-                ActivityResultCallbackFragment.start(context,{ fragment ->
-                    fragment.startActivityForResult(takeVideoIntent, REQUEST_CODE_VIDEO)
-                }, { requestCode: Int, resultCode: Int, data: Intent? ->
-                    if (requestCode == REQUEST_CODE_VIDEO) {
-                        if (resultCode == Activity.RESULT_OK) {
-                            if (data != null) {
-                                valueCallback.onReceiveValue(arrayOf(Uri.parse(data.dataString)))
-                            } else {
-                                valueCallback.onReceiveValue(null)
-                            }
-                        } else {
-                            valueCallback.onReceiveValue(null)
-                        }
-                    }
-                })
-                return true
-            }
-            return false
-        }*/
-
-
     }
 
     @HunterDebug

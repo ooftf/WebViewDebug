@@ -30,5 +30,26 @@ class X5WebActivity : AppCompatActivity() {
 
     }
 
+    override fun onPause() {
+        binding.webView.onPause()
+        super.onPause()
+    }
 
+    override fun onResume() {
+        binding.webView.onResume()
+        super.onResume()
+    }
+
+    override fun onDestroy() {
+        binding.webView.destroy()
+        super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        if (binding.webView.canGoBack()) {
+            binding.webView.goBack()
+        } else {
+            super.onBackPressed()
+        }
+    }
 }
