@@ -11,6 +11,7 @@ object Const {
         "http://dev-web.tojoycloud.org/tojoybossapp/contract.html?userId=77782045&orderId=VIP202101251430006096356&queryType=2&isApp=1&clearNav=1"
     const val URL2 = "https://ooftf.github.io/WebViewDebug/"
     const val URL3 = "https://www.baidu.com"
+    const val URL4 = "https://horeca.cpgroup.unclepi.cool/"
     fun getCurrentUrl(): String {
         return URL2
     }
