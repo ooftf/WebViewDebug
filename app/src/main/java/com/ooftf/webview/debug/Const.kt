@@ -12,6 +12,6 @@ object Const {
     const val URL2 = "https://ooftf.github.io/WebViewDebug/"
     const val URL3 = "https://www.baidu.com"
     fun getCurrentUrl(): String {
-        return URL3
+        return URL2
     }
 }
