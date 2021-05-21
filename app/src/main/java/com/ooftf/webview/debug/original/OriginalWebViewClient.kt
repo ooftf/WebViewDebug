@@ -121,7 +121,8 @@ class OriginalWebViewClient : WebViewClient() {
 
     @HunterDebug
     override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
-        super.onReceivedSslError(view, handler, error)
+        handler?.proceed()
+       // super.onReceivedSslError(view, handler, error)
     }
 
     @HunterDebug

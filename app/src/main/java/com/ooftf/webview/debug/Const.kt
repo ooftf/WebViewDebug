@@ -13,6 +13,6 @@ object Const {
     const val URL3 = "https://www.baidu.com"
     const val URL4 = "https://horeca.cpgroup.unclepi.cool/"
     fun getCurrentUrl(): String {
-        return URL2
+        return "https://emall.ccb.com:8443/ecp/thirdPartAPI"
     }
 }
