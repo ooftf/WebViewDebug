@@ -12,7 +12,9 @@ object Const {
     const val URL2 = "https://ooftf.github.io/WebViewDebug/"
     const val URL3 = "https://www.baidu.com"
     const val URL4 = "https://horeca.cpgroup.unclepi.cool/"
+    const val URL5 = "https://horeca.cpgroup.unclepi.cool/#/questionnaire/list"//admin@cphoreca.com  密码：ln4Gbn2x1
+    const val URL6 ="https://emall.ccb.com:8443/ecp/thirdPartAPI"
     fun getCurrentUrl(): String {
-        return "https://emall.ccb.com:8443/ecp/thirdPartAPI"
+        return URL5
     }
 }

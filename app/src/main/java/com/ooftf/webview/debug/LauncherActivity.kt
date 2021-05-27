@@ -3,6 +3,7 @@ package com.ooftf.webview.debug
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.webkit.WebView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.ooftf.webview.debug.databinding.ActivityLauncherBinding
@@ -50,5 +51,7 @@ class LauncherActivity: AppCompatActivity() {
         binding.x5.setOnClickListener {
             startActivity(Intent(this,X5WebActivity::class.java))
         }
+        WebView.setWebContentsDebuggingEnabled(true)
+        com.tencent.smtt.sdk.WebView.setWebContentsDebuggingEnabled(true)
     }
 }

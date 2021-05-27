@@ -3,6 +3,7 @@ package com.ooftf.webview.debug.original
 //import android.webkit.*
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.ooftf.webview.debug.Const
 import com.ooftf.webview.debug.databinding.ActivityOriginalWebviewBinding
 
@@ -22,10 +23,9 @@ class OriginalWebActivity : AppCompatActivity() {
         }
         binding.webView.webChromeClient = OriginalWebChromeClient()
         binding.webView.webViewClient = OriginalWebViewClient()
-
         binding.webView.loadUrl(Const.getCurrentUrl())
-
     }
+
     override fun onPause() {
         binding.webView.onPause()
         super.onPause()
@@ -35,10 +35,11 @@ class OriginalWebActivity : AppCompatActivity() {
         binding.webView.onResume()
         super.onResume()
     }
+
     override fun onBackPressed() {
-        if(binding.webView.canGoBack()){
+        if (binding.webView.canGoBack()) {
             binding.webView.goBack()
-        }else{
+        } else {
             super.onBackPressed()
         }
     }
@@ -47,4 +48,6 @@ class OriginalWebActivity : AppCompatActivity() {
         binding.webView.destroy()
         super.onDestroy()
     }
+
+
 }
