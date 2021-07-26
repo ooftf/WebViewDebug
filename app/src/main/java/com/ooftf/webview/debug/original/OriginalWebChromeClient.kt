@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Message
+import android.util.Log
 import android.view.View
 import android.webkit.*
 import com.hunter.library.debug.HunterDebug
@@ -11,8 +12,10 @@ import com.luck.picture.lib.PictureSelector
 import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.listener.OnResultCallbackListener
+import com.luck.picture.lib.tools.PictureFileUtils
 import com.ooftf.basic.utils.getFragmentActivity
 import com.ooftf.webview.debug.GlideEngine
+import java.io.File
 
 
 /**
@@ -203,12 +206,16 @@ class OriginalWebChromeClient : WebChromeClient() {
         super.getVisitedHistory(callback)
     }
 
+
+    //  To cancel the request, call filePathCallback.onReceiveValue(null) and return true.
+    // 返回 true 代表取消请求
     @HunterDebug
     override fun onShowFileChooser(
         webView: WebView,
         valueCallback: ValueCallback<Array<Uri>>,
         fileChooserParams: FileChooserParams?
     ): Boolean {
+        Log.e("onShowFileChooser",Thread.currentThread().name)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             fileChooserParams?.acceptTypes?.firstOrNull()?.let {
                 webView.context.getFragmentActivity()?.let { fragmentActivity ->
@@ -217,9 +224,11 @@ class OriginalWebChromeClient : WebChromeClient() {
                         .imageEngine(GlideEngine.createGlideEngine())
                         .forResult(object : OnResultCallbackListener<LocalMedia> {
                             override fun onResult(result: List<LocalMedia>) {
-                                valueCallback.onReceiveValue(result.map {
-                                    Uri.parse(it.path)
-                                }.toTypedArray())
+                                val result = result.map {
+                                    PictureFileUtils.parUri(fragmentActivity, File(it.fileName) )
+                                    //Uri.parse(it.path)
+                                }.toTypedArray()
+                                valueCallback.onReceiveValue(result)
                             }
 
                             override fun onCancel() {
@@ -230,8 +239,10 @@ class OriginalWebChromeClient : WebChromeClient() {
                 }
             }
         }
+
+        // true if filePathCallback will be invoked, false to use default handling.
         valueCallback.onReceiveValue(null)
-        return false
+        return true
     }
 
     @HunterDebug

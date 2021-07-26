@@ -14,7 +14,8 @@ object Const {
     const val URL4 = "https://horeca.cpgroup.unclepi.cool/"
     const val URL5 = "https://horeca.cpgroup.unclepi.cool/#/questionnaire/list"//admin@cphoreca.com  密码：ln4Gbn2x1
     const val URL6 ="https://emall.ccb.com:8443/ecp/thirdPartAPI"
+    const val URL7 = "https://page-h5-dev.cpcti.com/applycooperation"
     fun getCurrentUrl(): String {
-        return URL5
+        return URL7
     }
 }

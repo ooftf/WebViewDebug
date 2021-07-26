@@ -11,6 +11,7 @@ import com.luck.picture.lib.PictureSelector
 import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.listener.OnResultCallbackListener
+import com.luck.picture.lib.tools.PictureFileUtils
 import com.ooftf.basic.utils.getFragmentActivity
 import com.ooftf.webview.debug.GlideEngine
 import com.tencent.smtt.export.external.interfaces.*
@@ -18,6 +19,7 @@ import com.tencent.smtt.sdk.ValueCallback
 import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebStorage
 import com.tencent.smtt.sdk.WebView
+import java.io.File
 
 
 /**
@@ -162,7 +164,8 @@ class X5WebChromeClient : WebChromeClient() {
     override fun openFileChooser(p0: ValueCallback<Uri>?, p1: String?, p2: String?) {
         super.openFileChooser(p0, p1, p2)
     }
-
+    //  To cancel the request, call filePathCallback.onReceiveValue(null) and return true.
+    // 返回 true 代表取消请求
     @HunterDebug
     override fun onShowFileChooser(
         webView: WebView,
@@ -182,6 +185,7 @@ class X5WebChromeClient : WebChromeClient() {
                         }
 
                         override fun onCancel() {
+
                             valueCallback.onReceiveValue(null)
                         }
                     })
@@ -189,7 +193,7 @@ class X5WebChromeClient : WebChromeClient() {
             }
         }
         valueCallback.onReceiveValue(null)
-        return false
+        return true
     }
 
     @HunterDebug
