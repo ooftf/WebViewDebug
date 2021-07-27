@@ -206,16 +206,13 @@ class OriginalWebChromeClient : WebChromeClient() {
         super.getVisitedHistory(callback)
     }
 
-
-    //  To cancel the request, call filePathCallback.onReceiveValue(null) and return true.
-    // 返回 true 代表取消请求
     @HunterDebug
     override fun onShowFileChooser(
         webView: WebView,
         valueCallback: ValueCallback<Array<Uri>>,
         fileChooserParams: FileChooserParams?
     ): Boolean {
-        Log.e("onShowFileChooser",Thread.currentThread().name)
+        Log.e("onShowFileChooser", Thread.currentThread().name)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             fileChooserParams?.acceptTypes?.firstOrNull()?.let {
                 webView.context.getFragmentActivity()?.let { fragmentActivity ->
@@ -225,7 +222,11 @@ class OriginalWebChromeClient : WebChromeClient() {
                         .forResult(object : OnResultCallbackListener<LocalMedia> {
                             override fun onResult(result: List<LocalMedia>) {
                                 val result = result.map {
-                                    PictureFileUtils.parUri(fragmentActivity, File(it.path) )
+                                    if (it.path.startsWith("content://")) {
+                                        Uri.parse(it.path)
+                                    } else {
+                                        PictureFileUtils.parUri(fragmentActivity, File(it.path))
+                                    }
                                 }.toTypedArray()
                                 valueCallback.onReceiveValue(result)
                             }
@@ -238,8 +239,6 @@ class OriginalWebChromeClient : WebChromeClient() {
                 }
             }
         }
-
-        // true if filePathCallback will be invoked, false to use default handling.
         valueCallback.onReceiveValue(null)
         return true
     }

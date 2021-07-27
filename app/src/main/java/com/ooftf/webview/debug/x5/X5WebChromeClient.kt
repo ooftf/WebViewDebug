@@ -180,7 +180,11 @@ class X5WebChromeClient : WebChromeClient() {
                     .forResult(object : OnResultCallbackListener<LocalMedia> {
                         override fun onResult(result: List<LocalMedia>) {
                             valueCallback.onReceiveValue(result.map {
-                                PictureFileUtils.parUri(fragmentActivity, File(it.path) )
+                                if (it.path.startsWith("content://")) {
+                                    Uri.parse(it.path)
+                                } else {
+                                    PictureFileUtils.parUri(fragmentActivity, File(it.path))
+                                }
                             }.toTypedArray())
                         }
 
