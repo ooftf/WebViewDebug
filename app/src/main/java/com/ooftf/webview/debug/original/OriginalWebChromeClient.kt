@@ -225,8 +225,7 @@ class OriginalWebChromeClient : WebChromeClient() {
                         .forResult(object : OnResultCallbackListener<LocalMedia> {
                             override fun onResult(result: List<LocalMedia>) {
                                 val result = result.map {
-                                    PictureFileUtils.parUri(fragmentActivity, File(it.fileName) )
-                                    //Uri.parse(it.path)
+                                    PictureFileUtils.parUri(fragmentActivity, File(it.path) )
                                 }.toTypedArray()
                                 valueCallback.onReceiveValue(result)
                             }
